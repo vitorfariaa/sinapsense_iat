@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang='pt-BR'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>Teste</title>
+  <link rel='stylesheet' href='/public/css/styles.css'>
+  <script defer src='/public/js/common.js'></script>
+</head>
+<body>
+  <a class='site-logo' href='/' aria-label='Início'>
+    <img src='/public/logo.png' alt='IAT'>
+  </a>
+  <a class='back-fab' href='/'>voltar</a>
+  <div class='container'>
+    <div class='card'>
+      <h1 id='tname'>Teste</h1>
+      <div class='grid grid-3'>
+        <a class='card center' id='runBtn'><div><h2>Rodar teste</h2><p class='dim'>Coletar novas respostas</p></div></a>
+        <a class='card center' id='panBtn'><div><h2>Panorama</h2><p class='dim'>Matriz & tempos médios</p></div></a>
+        <a class='card center' id='runsBtn'><div><h2>Runs</h2><p class='dim'>Todas as execuções</p></div></a>
+        <a class='card center' id='csvBtn'><div><h2>Exportar CSV</h2><p class='dim'>Todos os resultados</p></div></a>
+      </div>
+    </div>
+
+    <div class='card'>
+      <h2>Configuração</h2>
+      <div class='grid grid-2'>
+        <div>
+          <h3>Marcas</h3>
+          <ul id='brands'></ul>
+        </div>
+        <div>
+          <h3>Palavras</h3>
+          <ul id='words'></ul>
+        </div>
+      </div>
+      <hr>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        (async () => {
+        const id = Number(param('id'));
+        if (!id) { location.href = '/'; return; }
+        const t = await getJSON('/api/tests/' + id);
+
+        qs('#tname').textContent = t.name;
+
+        t.brands.forEach(b => {
+            const li = document.createElement('li');
+            li.innerHTML = `<strong>${b.name}</strong>`;
+            qs('#brands').appendChild(li);
+        });
+
+        t.words.forEach(w => {
+            const li = document.createElement('li');
+            li.textContent = w.text;
+            qs('#words').appendChild(li);
+        });
+
+        qs('#runBtn').href = '/run?id=' + id;
+        qs('#panBtn').href = '/panorama?id=' + id;
+        qs('#runsBtn').href = '/runs?id=' + id;
+        qs('#csvBtn').href = '/api/tests/' + id + '/export.csv';
+        qs('#csvBtn').setAttribute('download', `teste-${id}-resultados.csv`);
+        })();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+/* public/css/styles.css */
+:root { --bg:#0f172a; --card:#111827; --text:#e5e7eb; --muted:#94a3b8; --accent:#22c55e; }
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui, -apple-system, Segoe UI, Roboto}
+a{color:var(--accent);text-decoration:none}
+.container{max-width:920px;margin:0 auto;padding:24px}
+.card{background:var(--card);border-radius:16px;padding:24px;box-shadow:0 6px 30px rgba(0,0,0,.35);margin-bottom:20px}
+h1,h2{margin:8px 0 16px}
+label{display:block;margin:8px 0 4px;color:var(--muted)}
+input,select,textarea,button{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #1f2937;background:#0b1220;color:var(--text)}
+button{cursor:pointer;border:none;background:var(--accent);color:#052e16;font-weight:700}
+.row{display:flex;gap:12px;align-items:flex-end}
+.row > *{flex:1}
+.table{width:100%;border-collapse:collapse;margin-top:12px}
+.table th,.table td{border-bottom:1px solid #1f2937;padding:8px}
+.badge{padding:3px 8px;border-radius:999px;background:#1e293b;color:#e2e8f0;font-size:12px}
+kbd{background:#1f2937;border-radius:6px;padding:2px 6px}
+.center{display:flex;justify-content:center;align-items:center}
+.hidden{display:none}
+.big{font-size:48px;font-weight:700}
+.dim{color:var(--muted)}
+.grid{display:grid;gap:12px}
+.grid-2{grid-template-columns:1fr 1fr}
+.grid-3{grid-template-columns:repeat(3,1fr)}
+hr{border:none;border-top:1px solid #1f2937;margin:16px 0}
+
+/* espaço para a barra fixa (logo + voltar) sem encavalar conteúdo */
+.container { padding-top: 96px; }
+
+/* LOGO no topo esquerdo */
+.site-logo {
+  position: fixed; top: 32px; left: 72px; z-index: 50;
+  display: inline-flex; align-items: center; gap: 10px;
+}
+.site-logo img { height: 124px; width: auto; display: block; }
+.site-logo span { font-weight: 800; letter-spacing: .3px; color: var(--text); }
+
+/* BOTÃO VOLTAR – flutuante (chamativo) no topo direito */
+.back-fab {
+  position: fixed; top: 16px; right: 16px; z-index: 50;
+  background: var(--accent); color: #052e16;
+  padding: 10px 16px; border-radius: 999px; font-weight: 800;
+  box-shadow: 0 10px 30px rgba(0,0,0,.4);
+  border: 2px solid #16a34a;
+}
+.back-fab:hover { transform: translateY(-1px); }
+.back-fab:active { transform: translateY(0); }
+
+/* alinhamento consistente de tabelas */
+.table { table-layout: fixed; } /* colunas estáveis, sem “bailar” */
+.table th, .table td { vertical-align: middle; }
+
+/* PANORAMA – matriz Palavras × Marcas */
+.matrix-table th:first-child,
+.matrix-table td:first-child { 
+  width: 32%;
+  text-align: left;
+}
+.matrix-table th:not(:first-child),
+.matrix-table td:not(:first-child) {
+  text-align: center;    /* números/percentuais centralizados */
+}
+
+/* PANORAMA – tempo médio por marca */
+.rt-table th:first-child,
+.rt-table td:first-child { text-align: left; }
+.rt-table th:last-child,
+.rt-table td:last-child { text-align: right; }
+
+/* RUN DETAIL – #, Marca, Palavra, Resposta, RT (ms) */
+.run-table th:nth-child(1),
+.run-table td:nth-child(2) { 
+  width: 64px; 
+  text-align: left;      /* índice alinhado à direita */
+}
+.run-table th:nth-child(3),
+.run-table td:nth-child(4),
+.run-table th:nth-child(5),
+.run-table td:nth-child(5) {
+  text-align: center;      /* resposta/RT numéricos à direita */
+}

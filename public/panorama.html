@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang='pt-BR'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>Panorama</title>
+  <link rel='stylesheet' href='/public/css/styles.css'>
+  <script defer src='/public/js/common.js'></script>
+</head>
+<body>
+  <a class='site-logo' href='/' aria-label='Início'>
+    <img src='/public/logo.png' alt='IAT'>
+  </a>
+  <div class='container'>
+    <div class='card'>
+      <h1>Panorama do teste</h1>
+      <div id='meta' class='dim'></div>
+    </div>
+
+    <div class='card'>
+      <h2>Matriz Palavras × Marcas</h2>
+      <div id='matrix'></div>
+    </div>
+
+    <div class='card'>
+      <h2>Tempo médio por marca (ms)</h2>
+      <table class='table rt-table' id='rt'>
+        <thead><tr><th>Marca</th><th>RT médio (ms)</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <a class='back-fab' id='back' href='/'>voltar</a>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        (async () => {
+        const id = Number(param('id'));
+        const t = await getJSON('/api/tests/' + id);
+        const p = await getJSON(`/api/tests/${id}/panorama`);
+
+        qs('#meta').textContent = `${t.name} · ${t.words.length} palavras × ${t.brands.length} marcas`;
+
+        // construir matriz: linhas = palavras, colunas = marcas
+        const brands = p.brands;
+        const words = p.words;
+
+        // índice rápido
+        const key = (wId, bId) => `${wId}:${bId}`;
+        const dict = {};
+        p.matrix.forEach(m => dict[key(m.wordId, m.brandId)] = m);
+
+        // tabela
+        const table = document.createElement('table');
+        table.className = 'table matrix-table'; 
+        const thead = document.createElement('thead');
+        const hdr = document.createElement('tr');
+        hdr.innerHTML = '<th>Palavra</th>' + brands.map(b => `<th>${b.name}</th>`).join('');
+        thead.appendChild(hdr);
+        table.appendChild(thead);
+
+        const tbody = document.createElement('tbody');
+        words.forEach(w => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td><strong>${w.text}</strong></td>` + brands.map(b => {
+            const cell = dict[key(w.id, b.id)];
+            if (!cell || !cell.total) return '<td class="dim">–</td>';
+            const pos = Number(cell.pos || 0);
+            const neg = Number(cell.neg || 0);
+            const total = Number(cell.total || 0);
+            const pct = total > 0 ? Math.round(100 * pos / total) : 0;
+            return `<td>${pos}/${total} <span class='badge'>${pct}% +</span></td>`;
+            }).join('');
+            tbody.appendChild(tr);
+        });
+        table.appendChild(tbody);
+        qs('#matrix').appendChild(table);
+
+        // tempos médios
+        const tbodyRt = qs('#rt tbody');
+        brands.forEach(b => {
+            const row = p.brandAvgRt.find(x => x.brandId === b.id);
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${b.name}</td><td>${row ? Math.round(row.avgRtMs) : '–'}</td>`;
+            tbodyRt.appendChild(tr);
+        });
+
+        qs('#back').href = '/test?id=' + id;
+        })();
+    });
+  </script>
+</body>
+</html>

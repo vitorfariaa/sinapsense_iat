@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang='pt-BR'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>Criar teste</title>
+  <link rel='stylesheet' href='/public/css/styles.css'>
+  <script defer src='/public/js/common.js'></script>
+</head>
+<body>
+  <a class='site-logo' href='/' aria-label='Início'>
+    <img src='/public/logo.png' alt='IAT'>
+  </a>
+  <a class='back-fab' href='/'>voltar</a>
+  <div class='container'>
+    <div class='card'>
+      <h1>Novo teste</h1>
+      <div class='grid'>
+        <div>
+          <label>Nome do teste</label>
+          <input id='name' placeholder='Ex.: Pepsi x Coca-Cola'>
+        </div>
+      </div>
+
+      <hr>
+
+      <h2>Rotulagem das respostas</h2>
+      <label>Como exibir os rótulos das teclas?</label>
+      <select id='respMode'>
+      <option value='pn' selected>Positivo / Negativo</option>
+      <option value='sn'>Sim / Não</option>
+      </select>
+
+      <hr>
+
+      <h2>Marcas</h2>
+      <div id='brands'></div>
+      <button id='addBrand'>Adicionar marca</button>
+
+      <hr>
+
+      <h2>Palavras/Frases</h2>
+      <label>Uma por linha</label>
+      <textarea id='words' rows='6' placeholder='bom&#10;ruim&#10;gostoso'></textarea>
+
+      <hr>
+
+      <div class='row'>
+        <button id='save'>Salvar teste</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const brandsEl = qs('#brands');
+        const addBrandRow = (b = {}) => {
+        const wrap = document.createElement('div');
+        wrap.className = 'card';
+        wrap.innerHTML = `
+            <div class='grid grid-2'>
+                <div>
+                <label>Nome da marca</label>
+                <input class='b-name' placeholder='Ex.: Coca-Cola' value='${b.name || ''}'>
+                </div>
+                <div>
+                <label>Logo (preview)</label>
+                <div style='display:flex;align-items:center;gap:10px;'>
+                    <img class='b-preview' src='${b.logoUrl || ''}' style='height:40px;max-width:140px;object-fit:contain;${b.logoUrl ? '' : 'display:none;'}'>
+                    <input class='b-logo' type='hidden' value='${b.logoUrl || ''}'>
+                </div>
+                </div>
+            </div>
+            <div class='row'>
+                <div>
+                <label>Enviar logo</label>
+                <input type='file' class='b-file' accept='image/*'>
+                </div>
+                <button class='rm'>Remover</button>
+            </div>`;
+        const file = qs('.b-file', wrap);
+        file.addEventListener('change', async e => {
+        const f = e.target.files[0]; if (!f) return;
+        const formData = new FormData();
+        formData.append('file', f);
+        const r = await fetch('/api/upload', { method: 'POST', body: formData });
+        const { url } = await r.json();
+        qs('.b-logo', wrap).value = url;
+        const img = qs('.b-preview', wrap);
+        img.src = url;
+        img.style.display = '';
+        });
+        qs('.rm', wrap).addEventListener('click', () => wrap.remove());
+        brandsEl.appendChild(wrap);
+        };
+
+        qs('#addBrand').addEventListener('click', () => addBrandRow());
+        addBrandRow(); // pelo menos 1
+
+        qs('#save').addEventListener('click', async () => {
+        const name = qs('#name').value.trim();
+        const brands = qsa('.card', brandsEl).map(div => ({
+            name: qs('.b-name', div).value.trim(),
+            logoUrl: qs('.b-logo', div).value.trim()
+        })).filter(b => b.name);
+        const words = qs('#words').value.split('\n').map(s => s.trim()).filter(Boolean);
+
+        if (!name || brands.length === 0 || words.length === 0) {
+            alert('Preencha nome, pelo menos 1 marca e 1 palavra.'); return;
+        }
+
+        const responseLabels = qs('#respMode').value; // 'pn' ou 'sn'
+        const res = await postJSON('/api/tests', { name, brands, words, responseLabels });
+        window.location.href = `/test?id=${res.id}`;
+
+        });
+    });
+  </script>
+</body>
+</html>

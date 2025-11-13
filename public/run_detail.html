@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang='pt-BR'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>Run</title>
+  <link rel='stylesheet' href='/public/css/styles.css'>
+  <script defer src='/public/js/common.js'></script>
+</head>
+<body>
+  <a class='site-logo' href='/' aria-label='Início'>
+    <img src='/public/logo.png' alt='IAT'>
+  </a>
+  <a class='back-fab' id='back' href='/'>voltar</a>
+  <div class='container'>
+    <div class='card'>
+      <h1>Run #<span id='rid'></span></h1>
+      <div id='meta' class='dim'></div>
+    </div>
+
+    <div class='card'>
+      <h2>Trials</h2>
+      <table class='table run-table' id='tbl'>
+        <thead><tr><th>#</th><th>Marca</th><th>Palavra</th><th>Resposta</th><th>RT (ms)</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        (async () => {
+        const runId = Number(param('runId'));
+        qs('#rid').textContent = runId;
+
+        const { run, trials } = await getJSON('/api/runs/' + runId);
+        qs('#meta').textContent = `Idade: ${run.age ?? '–'} • Gênero: ${run.gender ?? '–'} • Início: ${new Date(run.started_at).toLocaleString()}`;
+
+        const tb = qs('#tbl tbody');
+        trials.forEach((t, i) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+            <td>${i + 1}</td>
+            <td>${t.brandName}</td>
+            <td>${t.wordText}</td>
+            <td>${t.isPositive ? 'positivo' : 'negativo'}</td>
+            <td>${t.rtMs}</td>`;
+            tb.appendChild(tr);
+        });
+
+        qs('#back').href = '/runs?id=' + run.test_id;
+        })();
+    });
+  </script>
+</body>
+</html>

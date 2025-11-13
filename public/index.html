@@ -1,0 +1,55 @@
+<!-- public/index.html -->
+<!doctype html>
+<html lang='pt-BR'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>IAT • Menu</title>
+  <link rel='stylesheet' href='/public/css/styles.css'>
+  <script defer src='/public/js/common.js'></script>
+</head>
+<body>
+  <a class='site-logo' href='/' aria-label='Início'>
+    <img src='/public/logo.png' alt='IAT'>
+  </a>
+  <div class='container'>
+    <div class='card'>
+      <h1>IAT • Teste de Associação Implícita</h1>
+      <p class='dim'>Menu principal</p>
+      <div class='grid grid-3'>
+        <a class='card center' href='/create'><div><h2>Criar teste</h2><p>Cadastre nome, marcas e palavras</p></div></a>
+        <a class='card center' href='https://en.wikipedia.org/wiki/Implicit-association_test' target='_blank' rel='noreferrer'><div><h2>O que é IAT?</h2><p>Referência externa</p></div>
+        <a class='card center' href='https://www.linkedin.com/pulse/priming-jose-r-f-junior/' target='_blank' rel='noreferrer'><div><h2>O que é Priming?</h2><p>Artigo científico</p></div>
+        </a>
+      </div>
+    </div>
+
+    <div class='card'>
+      <h2>Testes</h2>
+      <table class='table' id='tbl'>
+        <thead><tr><th>Nome</th><th>Criado</th><th>Ações</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        (async () => {
+        const tbody = qs('#tbl tbody');
+        const tests = await getJSON('/api/tests');
+        tests.forEach(t => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+            <td>${t.name}</td>
+            <td>${new Date(t.created_at).toLocaleString()}</td>
+            <td>
+                <a href='/test?id=${t.id}'>Abrir</a>
+            </td>`;
+            tbody.appendChild(tr);
+        });
+        })();
+    });
+  </script>
+</body>
+</html>

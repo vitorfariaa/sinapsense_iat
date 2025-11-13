@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang='pt-BR'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>Runs</title>
+  <link rel='stylesheet' href='/public/css/styles.css'>
+  <script defer src='/public/js/common.js'></script>
+</head>
+<body>
+  <a class='site-logo' href='/' aria-label='Início'>
+    <img src='/public/logo.png' alt='IAT'>
+  </a>
+  <a class='back-fab' id='back' href='/'>voltar</a>
+  <div class='container'>
+    <div class='card'>
+      <h1>Runs do teste</h1>
+      <table class='table' id='tbl'>
+        <thead><tr><th>ID</th><th>Idade</th><th>Gênero</th><th>Trials</th><th>Início</th><th>Fim</th><th>Abrir</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        (async () => {
+        const id = Number(param('id'));
+        const runs = await getJSON(`/api/tests/${id}/runs`);
+        const tb = qs('#tbl tbody');
+        runs.forEach(r => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+            <td>${r.id}</td>
+            <td>${r.age ?? ''}</td>
+            <td>${r.gender ?? ''}</td>
+            <td>${r.trials}</td>
+            <td>${new Date(r.started_at).toLocaleString()}</td>
+            <td>${r.completed_at ? new Date(r.completed_at).toLocaleString() : '<span class="badge">em aberto</span>'}</td>
+            <td><a href='/run-detail?runId=${r.id}'>ver</a></td>`;
+            tb.appendChild(tr);
+        });
+        qs('#back').href = '/test?id=' + id;
+        })();
+    });
+  </script>
+</body>
+</html>

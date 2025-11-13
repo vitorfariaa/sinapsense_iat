@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang='pt-BR'>
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>Rodar teste</title>
+  <link rel='stylesheet' href='/public/css/styles.css'>
+  <script defer src='/public/js/common.js'></script>
+  <script defer src='/public/js/run.js'></script>
+</head>
+<body>
+  <a class='site-logo' href='/' aria-label='Início'>
+    <img src='/public/logo.png' alt='IAT'>
+  </a>
+  <a class='back-fab' id='backToTest' href='/'>voltar</a>
+  <div class='container'>
+    <!-- step 1: demographics -->
+    <div class='card' id='step1'>
+      <h1>Antes de começar</h1>
+      <div class='grid grid-3'>
+        <div>
+          <label>Idade</label>
+          <input id='age' type='number' min='10' max='120' placeholder='Ex.: 27'>
+        </div>
+        <div>
+          <label>Gênero</label>
+          <select id='gender'>
+            <option value=''>Selecionar…</option>
+            <option>masculino</option>
+            <option>feminino</option>
+            <option>nao binario</option>
+          </select>
+        </div>
+      </div>
+      <hr>
+      <button id='goStep2'>Continuar</button>
+    </div>
+
+    <!-- step 2: tutorial -->
+    <div class='card hidden' id='step2'>
+      <h1>Tutorial</h1>
+      <p>Quando aparecer uma palavra, aperte <kbd>E</kbd> se achar <strong>positivo</strong> ou <kbd>O</kbd> se achar <strong>negativo</strong>.</p>
+      <p>Teste com 3 palavras: <em>bom</em>, <em>ruim</em>, <em>gostoso</em>.</p>
+      <div class='row'>
+        <button id='startPractice'>Começar prática</button>
+        <button id='finishPractice' class='hidden'>Finalizar prática</button>
+      </div>
+      <div class='card center hidden' id='practiceBox' style='height:180px;'>
+        <div class='big' id='practiceWord'></div>
+      </div>
+    </div>
+
+    <!-- step 3: countdown -->
+    <div class='card hidden' id='step3'>
+      <h1>Vai começar</h1>
+      <p class='dim'>Concentre-se no centro da tela.</p>
+      <div class='center' style='height:160px;'><div class='big' id='countdown'>5</div></div>
+    </div>
+
+    <!-- step 4: test running -->
+    <div class='card hidden' id='step4'>
+      <div class='center' style='height:280px;'>
+        <img id='primeImg' class='hidden' style='max-height:160px;max-width:60%;object-fit:contain'>
+        <div id='wordBox' class='big hidden'></div>
+      </div>
+      <p class='dim center'>Responda com <kbd>E</kbd> (positivo) ou <kbd>O</kbd> (negativo)</p>
+      <div class='center dim' id='progress'></div>
+    </div>
+
+    <!-- step 5: done -->
+    <div class='card hidden' id='step5'>
+      <h1>Concluído, obrigado!</h1>
+      <p>Suas respostas foram registradas.</p>
+      <div class='grid grid-3'>
+        <a class='card center' id='goPan'><div><h2>Ver panorama</h2></div></a>
+        <a class='card center' id='goRuns'><div><h2>Ver runs</h2></div></a>
+        <a class='card center' id='goTest'><div><h2>Voltar ao teste</h2></div></a>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
